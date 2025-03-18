@@ -19,7 +19,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -29,4 +29,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsHatchOpen = false;
 
+private:
+	// Function to draw laser line tracers
+	void DrawLaserLineTracers();
 };
+
