@@ -2,6 +2,7 @@
 
 #include "MechaCharacter.h"
 #include "DrawDebugHelpers.h"
+#include "NiagaraFunctionLibrary.h"
 
 // Sets default values
 AMechaCharacter::AMechaCharacter()
@@ -41,33 +42,55 @@ void AMechaCharacter::DrawLaserLineTracers()
 		return;
 	}
 
-	FVector LSocketLocation = SkeletalMesh->GetSocketLocation("Turret-LSocket");
-	FVector RSocketLocation = SkeletalMesh->GetSocketLocation("Turret-RSocket");
+	LaserStartLocationLeft = SkeletalMesh->GetSocketLocation("Turret-LSocket");
+	LaserStartLocationRight = SkeletalMesh->GetSocketLocation("Turret-RSocket");
 
 	FVector ForwardVector = GetActorForwardVector();
 
-	FVector LEndLocation = LSocketLocation + (ForwardVector * 500.0f);
-	FVector REndLocation = RSocketLocation + (ForwardVector * 500.0f);
+	FVector LEndLocation = LaserStartLocationLeft + (ForwardVector * 500.0f);
+	FVector REndLocation = LaserStartLocationRight + (ForwardVector * 500.0f);
 
 	// Line trace for the left socket
-	FHitResult LHitResult;
 	GetWorld()->LineTraceSingleByChannel(
-		LHitResult,
-		LSocketLocation,
+		LaserHitResultLeft,
+		LaserStartLocationLeft,
 		LEndLocation,
 		ECC_Visibility // Change to the appropriate collision channel if needed
 	);
 
 	// Line trace for the right socket
-	FHitResult RHitResult;
 	GetWorld()->LineTraceSingleByChannel(
-		RHitResult,
-		RSocketLocation,
+		LaserHitResultRight,
+		LaserStartLocationRight,
 		REndLocation,
 		ECC_Visibility // Change to the appropriate collision channel if needed
 	);
 
 	// Draw debug lines
-	DrawDebugLine(GetWorld(), LSocketLocation, LEndLocation, FColor::Red, false, -1, 0, 1);
-	DrawDebugLine(GetWorld(), RSocketLocation, REndLocation, FColor::Red, false, -1, 0, 1);
+	DrawDebugLine(GetWorld(), LaserStartLocationLeft, LEndLocation, FColor::Red, false, -1, 0, 1);
+	DrawDebugLine(GetWorld(), LaserStartLocationRight, REndLocation, FColor::Red, false, -1, 0, 1);
+}
+
+void AMechaCharacter::ShootLaser()
+{
+	if (bIsHatchOpen)
+	{
+		// Play launch effects
+		if (LaunchLaserEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), LaunchLaserEffect, LaserStartLocationLeft);
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), LaunchLaserEffect, LaserStartLocationRight);
+		}
+
+		// Play hit effects
+		if (LaserHitResultLeft.bBlockingHit && HitLaserEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultLeft.Location);
+		}
+
+		if (LaserHitResultRight.bBlockingHit && HitLaserEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultRight.Location);
+		}
+	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "NiagaraSystem.h"
 #include "MechaCharacter.generated.h"
 
 UCLASS()
@@ -29,8 +30,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsHatchOpen = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UNiagaraSystem* LaunchLaserEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UNiagaraSystem* HitLaserEffect;
+
+	UFUNCTION(BlueprintCallable)
+	void ShootLaser();
+
 private:
 	// Function to draw laser line tracers
 	void DrawLaserLineTracers();
+
+	FHitResult LaserHitResultLeft;
+	FHitResult LaserHitResultRight;
+	FVector LaserStartLocationLeft;
+	FVector LaserStartLocationRight;
 };
 
