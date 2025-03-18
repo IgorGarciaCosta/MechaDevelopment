@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "NiagaraSystem.h"
+#include "Sound/SoundBase.h"
 #include "MechaCharacter.generated.h"
 
 UCLASS()
@@ -35,6 +36,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UNiagaraSystem* HitLaserEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* LaserSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	USoundBase* HitSound;
 
 	UFUNCTION(BlueprintCallable)
 	void ShootLaser();

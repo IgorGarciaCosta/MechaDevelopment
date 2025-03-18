@@ -3,6 +3,7 @@
 #include "MechaCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMechaCharacter::AMechaCharacter()
@@ -69,8 +70,6 @@ void AMechaCharacter::DrawLaserLineTracers()
 	// Draw debug lines
 	DrawDebugLine(GetWorld(), LaserStartLocationLeft, LEndLocation, FColor::Red, false, -1, 0, 1);
 	DrawDebugLine(GetWorld(), LaserStartLocationRight, REndLocation, FColor::Red, false, -1, 0, 1);
-
-	
 }
 
 void AMechaCharacter::ShootLaser()
@@ -84,15 +83,36 @@ void AMechaCharacter::ShootLaser()
 			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), LaunchLaserEffect, LaserStartLocationRight);
 		}
 
-		// Play hit effects
-		if (LaserHitResultLeft.bBlockingHit && HitLaserEffect)
+		// Play laser sounds at the start locations
+		if (LaserSound)
 		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultLeft.Location);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), LaserSound, LaserStartLocationLeft);
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), LaserSound, LaserStartLocationRight);
 		}
 
-		if (LaserHitResultRight.bBlockingHit && HitLaserEffect)
+		// Play hit effects
+		if (LaserHitResultLeft.bBlockingHit)
 		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultRight.Location);
+			if (HitLaserEffect)
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultLeft.Location);
+			}
+			if (HitSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, LaserHitResultLeft.Location);
+			}
+		}
+
+		if (LaserHitResultRight.bBlockingHit)
+		{
+			if (HitLaserEffect)
+			{
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultRight.Location);
+			}
+			if (HitSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, LaserHitResultRight.Location);
+			}
 		}
 	}
 }
