@@ -68,8 +68,8 @@ void AMechaCharacter::DrawLaserLineTracers()
 	);
 
 	// Draw debug lines
-	DrawDebugLine(GetWorld(), LaserStartLocationLeft, LEndLocation, FColor::Red, false, -1, 0, 1);
-	DrawDebugLine(GetWorld(), LaserStartLocationRight, REndLocation, FColor::Red, false, -1, 0, 1);
+	/*DrawDebugLine(GetWorld(), LaserStartLocationLeft, LEndLocation, FColor::Red, false, -1, 0, 1);
+	DrawDebugLine(GetWorld(), LaserStartLocationRight, REndLocation, FColor::Red, false, -1, 0, 1);*/
 }
 
 void AMechaCharacter::ShootLaser()
