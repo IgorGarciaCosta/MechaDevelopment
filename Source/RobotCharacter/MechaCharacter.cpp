@@ -74,45 +74,68 @@ void AMechaCharacter::DrawLaserLineTracers()
 
 void AMechaCharacter::ShootLaser()
 {
-	if (bIsHatchOpen)
-	{
-		// Play launch effects
-		if (LaunchLaserEffect)
-		{
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), LaunchLaserEffect, LaserStartLocationLeft);
-			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), LaunchLaserEffect, LaserStartLocationRight);
-		}
+    if (bIsHatchOpen)
+    {
+        USkeletalMeshComponent* SkeletalMesh = GetMesh();
+        if (!SkeletalMesh)
+        {
+            return;
+        }
 
-		// Play laser sounds at the start locations
-		if (LaserSound)
-		{
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), LaserSound, LaserStartLocationLeft);
-			UGameplayStatics::PlaySoundAtLocation(GetWorld(), LaserSound, LaserStartLocationRight);
-		}
+        // Play launch effects
+        if (LaunchLaserEffect)
+        {
+            UNiagaraFunctionLibrary::SpawnSystemAttached(
+                LaunchLaserEffect,
+                SkeletalMesh,
+                FName("Turret-LSocket"),
+                FVector::ZeroVector,
+                FRotator::ZeroRotator,
+                EAttachLocation::SnapToTarget,
+                true
+            );
 
-		// Play hit effects
-		if (LaserHitResultLeft.bBlockingHit)
-		{
-			if (HitLaserEffect)
-			{
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultLeft.Location);
-			}
-			if (HitSound)
-			{
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, LaserHitResultLeft.Location);
-			}
-		}
+            UNiagaraFunctionLibrary::SpawnSystemAttached(
+                LaunchLaserEffect,
+                SkeletalMesh,
+                FName("Turret-RSocket"),
+                FVector::ZeroVector,
+                FRotator::ZeroRotator,
+                EAttachLocation::SnapToTarget,
+                true
+            );
+        }
 
-		if (LaserHitResultRight.bBlockingHit)
-		{
-			if (HitLaserEffect)
-			{
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultRight.Location);
-			}
-			if (HitSound)
-			{
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, LaserHitResultRight.Location);
-			}
-		}
-	}
+        // Play laser sounds at the start locations
+        if (LaserSound)
+        {
+            UGameplayStatics::PlaySoundAtLocation(GetWorld(), LaserSound, LaserStartLocationLeft);
+            UGameplayStatics::PlaySoundAtLocation(GetWorld(), LaserSound, LaserStartLocationRight);
+        }
+
+        // Play hit effects
+        if (LaserHitResultLeft.bBlockingHit)
+        {
+            if (HitLaserEffect)
+            {
+                UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultLeft.Location);
+            }
+            if (HitSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, LaserHitResultLeft.Location);
+            }
+        }
+
+        if (LaserHitResultRight.bBlockingHit)
+        {
+            if (HitLaserEffect)
+            {
+                UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), HitLaserEffect, LaserHitResultRight.Location);
+            }
+            if (HitSound)
+            {
+                UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, LaserHitResultRight.Location);
+            }
+        }
+    }
 }
