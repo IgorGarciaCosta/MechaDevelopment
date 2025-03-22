@@ -46,6 +46,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ShootLaser();
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void ApplyImpact(FHitResult LeftImpart, FHitResult RightImpact);
+
 private:
 	// Function to draw laser line tracers
 	void DrawLaserLineTracers();

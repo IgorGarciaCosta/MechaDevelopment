@@ -48,8 +48,8 @@ void AMechaCharacter::DrawLaserLineTracers()
 
 	FVector ForwardVector = GetActorForwardVector();
 
-	FVector LEndLocation = LaserStartLocationLeft + (ForwardVector * 500.0f);
-	FVector REndLocation = LaserStartLocationRight + (ForwardVector * 500.0f);
+	FVector LEndLocation = LaserStartLocationLeft + (ForwardVector * 10000.0f);
+	FVector REndLocation = LaserStartLocationRight + (ForwardVector * 10000.0f);
 
 	// Line trace for the left socket
 	GetWorld()->LineTraceSingleByChannel(
@@ -137,5 +137,7 @@ void AMechaCharacter::ShootLaser()
                 UGameplayStatics::PlaySoundAtLocation(GetWorld(), HitSound, LaserHitResultRight.Location);
             }
         }
+
+        ApplyImpact(LaserHitResultLeft, LaserHitResultRight);
     }
 }
